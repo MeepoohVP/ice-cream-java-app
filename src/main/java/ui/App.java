@@ -32,16 +32,31 @@ public class App {
         Stream.of("Banana split 99.-","strawberry sundae 169.-",
                 "rocky road 129.-","cookie and cream cone 69.-",
                 "vanilla cone 69.-");
-        Scanner sc = new Scanner(System.in);
+        if (pw.equals("icecream123")) {
+            Stream.of("Banana split 99.-","strawberry sundae 169.-",
+                    "rocky road 129.-","cookie and cream cone 69.-",
+                    "vanilla cone 69.-").forEach(System.out::println);
+        }
         while(pw.equals("icecream123")){
+            Scanner sc = new Scanner(System.in);
             Customer cust = sh.registerCustomer();
             System.out.print("What would you like to order?: ");
-            String menuName = "";
-
+            String menuName = sc.nextLine();
+            System.out.print("How many cups do you need?: ");
             Order order = sh.addOrder(cust.getQueue());
             OrderDetail orderDetail = sh.createOrderDetail(order.getCode());
-            orderDetail.addIceCream(menuName, 1);
+            int quantity = sc.nextInt();
+            orderDetail.addIceCream(menuName, quantity);
+            while (sc.hasNextLine()){
+                System.out.print("Anything more(n if not): ");
+                String more = sc.nextLine();
+                if (more.equals("n")){
+                    break;
+                }
+                orderDetail.addIceCream(more, 1);
+            }
             System.out.println(orderDetail);
+            System.out.println(orderDetail.getTotal());
         }
     }
 }
