@@ -43,9 +43,7 @@ public class ShopService {
         if (orderCode == null) { return null; }
         return orderDetails.addOrderDetail(orderCode);
     }
-    public OrderDetail addDetail(String orderCode, String menu, int quantity){
-        OrderDetail od = findOrderDetail(orderCode);
-        if (!od.addIceCream(menu,quantity)) return null;
+    public OrderDetail updateOrderDetail(OrderDetail od){
         return orderDetails.updateOrderDetail(od);
     }
     public OrderDetail findOrderDetail(String orderCode){

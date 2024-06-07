@@ -1,6 +1,8 @@
 package ui;
 
 import domain.Customer;
+import domain.Order;
+import domain.OrderDetail;
 import repository.MemCustomerRepository;
 import repository.MemOrderDetailRepository;
 import repository.MemOrderRepository;
@@ -21,7 +23,6 @@ public class App {
         for (int i = 0; i < password.length; i++) {
             pw+=password[i];
         }
-        System.out.println(pw);
         MemCustomerRepository c = new MemCustomerRepository();
         MemOrderRepository o = new MemOrderRepository();
         MemOrderDetailRepository od = new MemOrderDetailRepository();
@@ -31,13 +32,16 @@ public class App {
         Stream.of("Banana split 99.-","strawberry sundae 169.-",
                 "rocky road 129.-","cookie and cream cone 69.-",
                 "vanilla cone 69.-");
+        Scanner sc = new Scanner(System.in);
         while(pw.equals("icecream123")){
-            Scanner sc = new Scanner(System.in);
-            System.out.println("What would you like to order?: ");
-            String menu = sc.next();
-            if (menu.equalsIgnoreCase("Banana split")){
+            Customer cust = sh.registerCustomer();
+            System.out.print("What would you like to order?: ");
+            String menuName = "";
 
-            }
+            Order order = sh.addOrder(cust.getQueue());
+            OrderDetail orderDetail = sh.createOrderDetail(order.getCode());
+            orderDetail.addIceCream(menuName, 1);
+            System.out.println(orderDetail);
         }
     }
 }

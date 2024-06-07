@@ -12,7 +12,7 @@ public class MemOrderDetailRepository implements OrderDetailRepository {
     @Override
     public OrderDetail addOrderDetail(String orderCode) {
         OrderDetail od = new OrderDetail(orderCode);
-        if (repo.putIfAbsent(orderCode, od) != null) {return od;}
+        if (repo.putIfAbsent(orderCode, od) == null) {return od;}
         return null;
     }
     @Override

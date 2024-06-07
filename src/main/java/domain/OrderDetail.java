@@ -49,4 +49,9 @@ public class OrderDetail {
         updateTotal(menu, quantity);
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "OrderDetail [orderCode=" + orderCode + ", iceCream=" + iceCream + "]";
+    }
 }
