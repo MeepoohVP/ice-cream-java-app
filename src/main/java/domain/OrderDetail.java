@@ -2,10 +2,11 @@ package domain;
 
 import exception.OrderDetailException;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OrderDetail {
+public class OrderDetail implements Serializable {
     //banana split 99
     //strawberry sundae 169
     //rocky road 129
@@ -16,7 +17,7 @@ public class OrderDetail {
     private int total;
     public OrderDetail(String orderCode) {
         this.orderCode = orderCode;
-        iceCream = new HashMap<String, Integer>();
+        iceCream = new HashMap<>();
         total = 0;
     }
 

@@ -2,32 +2,46 @@ package repository;
 
 import domain.Customer;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FileCustomerRepository implements CustomerRepository {
-    private static final String PATH = "../customers.txt";
+    private static final String PATH = "customers.txt";
     private static int nextId = 0;
-    private Map<String, Customer> repo = new HashMap<>();
-    private FileCustomerRepository(){
-        try (
-                FileInputStream fis = new FileInputStream(PATH);
-                BufferedInputStream bis = new BufferedInputStream(fis);
-                ObjectInputStream ois = new ObjectInputStream(bis);){
-            repo = (Map<String, Customer>) ois.readObject();
-        }catch (Exception e){
-            e.printStackTrace();
+    private Map<String, Customer> repo;
+    public FileCustomerRepository(){
+        File file = new File(PATH);
+        if (file.exists()){
+            try (
+                    FileInputStream fis = new FileInputStream(file);
+                    BufferedInputStream bis = new BufferedInputStream(fis);
+                    ObjectInputStream ois = new ObjectInputStream(bis)){
+                repo = (Map<String, Customer>) ois.readObject();
+            }catch (IOException | ClassNotFoundException e){
+                System.err.println(e.getMessage());
+            }
+        }
+        repo = new HashMap<>();
+    }
+    private void writeToFile(){
+        try (FileOutputStream fos = new FileOutputStream(PATH);
+        BufferedOutputStream bos = new BufferedOutputStream(fos);
+        ObjectOutputStream oos = new ObjectOutputStream(bos)){
+            oos.writeObject(repo);
+        }catch (IOException e){
+            System.err.println(e.getMessage());
         }
     }
     @Override
     public Customer addCustomer() {
         String CustomerId = "C" + ++nextId;
         Customer c = new Customer(CustomerId);
-        if (repo.putIfAbsent(CustomerId, c) == null) return c;
+        if (repo.putIfAbsent(CustomerId, c) == null) {
+            writeToFile();
+            return c;
+        }
         return null;
     }
 

@@ -1,19 +1,14 @@
 package ui;
 import domain.Customer;
 import domain.Order;
-import repository.MemCustomerRepository;
-import repository.MemOrderDetailRepository;
-import repository.MemOrderRepository;
+import repository.*;
 import service.ShopService;
 import java.io.Console;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
 public class App {
-    private static MemCustomerRepository c = new MemCustomerRepository();
-    private static MemOrderRepository o = new MemOrderRepository();
-    private static MemOrderDetailRepository od = new MemOrderDetailRepository();
-    private static ShopService sh = new ShopService(c, o, od);
+    private static ShopService sh;
     private static void receiveOrder() {
         while (true){
             System.out.println("Menu");
@@ -75,7 +70,7 @@ public class App {
                 break;
             }
             if (m.equals("customer")) {
-                System.out.print("you want to find or list all customer:");
+                System.out.print("you want to find or list all customer: ");
                 String select = sc.nextLine();
                 if (select.equals("find")){
                     System.out.print("Enter customer queue: ");
@@ -103,7 +98,7 @@ public class App {
                     System.out.println("Invalid option");
                 }
             } else if (m.equals("order detail")) {
-                System.out.print("you want to find or list all order: ");
+                System.out.print("you want to find or list all order detail: ");
                 String select = sc.nextLine();
                 if (select.equals("find")){
                     System.out.print("Enter order code: ");
@@ -125,7 +120,25 @@ public class App {
         for (int i = 0; i < password.length; i++) {
             pw+=password[i];
         }
+        Scanner way = new Scanner(System.in);
         System.out.println("Welcome to Ice-cream shop!");
+        System.out.println("- memory" +
+                "\n- file" + "\n- database");
+        System.out.print("choose way to save data: ");
+        String choose = way.nextLine();
+        if (choose.equals("memory")) {
+            sh = new ShopService(
+                    new MemCustomerRepository(),
+                    new MemOrderRepository(),
+                    new MemOrderDetailRepository()
+            );
+        }else if (choose.equals("file")) {
+            sh = new ShopService(
+                    new FileCustomerRepository(),
+                    new FileOrderRepository(),
+                    new FileOrderDetailRepository()
+            );
+        }
         while (pw.equals("icecream123")) {
             Scanner input = new Scanner(System.in);
             //receive order, manage

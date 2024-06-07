@@ -2,7 +2,9 @@ package domain;
 
 import exception.OrderException;
 
-public class Order {
+import java.io.Serializable;
+
+public class Order implements Serializable {
     private final String code;
     private final String ownerId;
     private String status;
