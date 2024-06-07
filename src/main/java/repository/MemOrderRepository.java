@@ -13,7 +13,7 @@ public class MemOrderRepository implements OrderRepository {
     @Override
     public Order addOrder(String ownerId) {
         String OrderCode = "" + ++nextCode;
-        Order c = new Order(OrderCode,ownerId,"in progress");
+        Order c = new Order(OrderCode,ownerId,"wait payment");
         if (repo.putIfAbsent(OrderCode, c) == null) return c;
         return null;
     }

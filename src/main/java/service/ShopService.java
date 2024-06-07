@@ -36,6 +36,10 @@ public class ShopService {
         if (orderCode == null) { return null; }
         return orders.findOrder(orderCode);
     }
+    public Order updateOrder(Order order) {
+        if (order.getCode() == null) { return null; }
+        return orders.updateOrder(order);
+    }
     public Collection<Order> allOrders() {
         return orders.allOrder();
     }
@@ -43,7 +47,9 @@ public class ShopService {
         if (orderCode == null) { return null; }
         return orderDetails.addOrderDetail(orderCode);
     }
-    public OrderDetail updateOrderDetail(OrderDetail od){
+    public OrderDetail addIceCream(String orderCode, String menu, int quantity){
+        OrderDetail od = orderDetails.findOrderDetail(orderCode);
+        if (!od.addIceCream(menu, quantity)) return null;
         return orderDetails.updateOrderDetail(od);
     }
     public OrderDetail findOrderDetail(String orderCode){

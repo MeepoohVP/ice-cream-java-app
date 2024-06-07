@@ -8,6 +8,8 @@ public class Order {
     private String status;
     //in progress
     //success
+    //wait payment
+    //cancel
     public Order(String code, String ownerId, String status) {
         this.code = code;
         this.ownerId = ownerId;
@@ -23,7 +25,7 @@ public class Order {
         return status;
     }
     public void setStatus(String status) {
-        if (!status.matches("in progress|success")){
+        if (!status.matches("wait payment|in progress|success|cancel")){
             throw new OrderException();
         }
         this.status = status;

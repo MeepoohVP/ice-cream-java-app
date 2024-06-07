@@ -27,6 +27,11 @@ public class OrderDetail {
     public double getTotal() {
         return total;
     }
+
+    public Map<String, Integer> getIceCream() {
+        return iceCream;
+    }
+
     public void updateTotal(String menu, int quantity) {
         if (menu.equalsIgnoreCase("banana split")) {
             total += 99 * quantity;
