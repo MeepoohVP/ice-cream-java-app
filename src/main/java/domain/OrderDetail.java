@@ -1,10 +1,9 @@
 package domain;
 
-import exception.OrderDetailException;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class OrderDetail implements Serializable {
     //banana split 99
@@ -32,7 +31,6 @@ public class OrderDetail implements Serializable {
     public Map<String, Integer> getIceCream() {
         return iceCream;
     }
-
     public void updateTotal(String menu, int quantity) {
         if (menu.equalsIgnoreCase("banana split")) {
             total += 99 * quantity;

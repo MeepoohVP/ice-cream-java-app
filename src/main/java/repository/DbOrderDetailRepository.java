@@ -1,4 +1,36 @@
 package repository;
 
-public class DbOrderDetailRepository {
+import domain.OrderDetail;
+
+import java.sql.*;
+import java.util.*;
+
+public class DbOrderDetailRepository implements OrderDetailRepository {
+
+    private final Map<String, OrderDetail> repo = new HashMap<>();
+
+    @Override
+    public OrderDetail addOrderDetail(String orderCode) {
+        OrderDetail od = new OrderDetail(orderCode);
+        if (repo.putIfAbsent(orderCode, od) == null) {return od;}
+        return null;
+    }
+    @Override
+    public OrderDetail findOrderDetail(String orderCode){
+        return  repo.get(orderCode);
+    }
+    @Override
+    public Collection<OrderDetail> allOrderDetails(){
+        return repo.values();
+    }
+
+    @Override
+    public OrderDetail updateOrderDetail(OrderDetail orderDetail) {
+        try {
+            repo.replace(orderDetail.getOrderCode(), orderDetail);
+        } catch (Exception e) {
+            return null;
+        }
+        return orderDetail;
+    }
 }

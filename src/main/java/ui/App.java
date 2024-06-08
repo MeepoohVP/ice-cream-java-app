@@ -4,10 +4,19 @@ import domain.Order;
 import repository.*;
 import service.ShopService;
 import java.io.Console;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
 public class App {
+    private static String url = "jdbc:mysql://127.0.0.1:3306/icecream";
+    private static String user = "root";
+    private static String password = "4149055160Pp!#";
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url,user,password);
+    }
     private static ShopService sh;
     private static void receiveOrder() {
         while (true){
@@ -77,6 +86,7 @@ public class App {
                     String queue = sc.nextLine();
                     System.out.println(sh.findCustomer(queue));
                 } else if (select.equals("list all")) {
+                    System.out.println(sh.allCustomers());
                     sh.allCustomers().stream().sorted((a,b) -> a.getQueue().compareTo(b.getQueue())).forEach(s -> System.out.println("     " +s.getQueue()));
                 } else {
                     System.out.println("Invalid option");
@@ -138,6 +148,12 @@ public class App {
                         new FileCustomerRepository(),
                         new FileOrderRepository(),
                         new FileOrderDetailRepository()
+                );
+            } else if (choose.equals("database")) {
+                sh = new ShopService(
+                        new DbCustomerRepository(),
+                        new DbOrderRepository(),
+                        new DbOrderDetailRepository()
                 );
             }
             while (true) {

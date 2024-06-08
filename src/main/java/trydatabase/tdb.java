@@ -2,7 +2,7 @@ package trydatabase;
 import java.sql.*;
 public class tdb {
     public static void main(String[] args){
-        String url = "jdbc:mysql://127.0.0.1:3306/icecream";
+        String url = "jdbc:mysql://localhost:3306/icecream";
         String user = "root";
         String password = "4149055160Pp!#";
         try {
@@ -10,9 +10,8 @@ public class tdb {
             System.out.println("Driver loaded");
             Connection connection = DriverManager.getConnection(url,user,password);
             System.out.println("Database connected");
-
             Statement statement = connection.createStatement();
-            String sql = "select * FROM dborderdetail"; //เลือกมาสดง
+            String sql = "select * FROM dbcustomer"; //เลือกมาสดง
             String sql1 = "update dborderdetail set ordercode = '1' where menu = 'rocky road'"; //อัปเด่าเข้าไป
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()){

@@ -26,10 +26,4 @@ public class MemCustomerRepository implements CustomerRepository {
     public Collection<Customer> allCustomers() {
         return  repo.values();
     }
-
-
-
-
-
-
 }

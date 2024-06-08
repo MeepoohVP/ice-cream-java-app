@@ -31,8 +31,8 @@ public class FileCustomerRepository implements CustomerRepository {
     }
     private void writeToFile(){
         try (FileOutputStream fos = new FileOutputStream(PATH);
-        BufferedOutputStream bos = new BufferedOutputStream(fos);
-        ObjectOutputStream oos = new ObjectOutputStream(bos)){
+             BufferedOutputStream bos = new BufferedOutputStream(fos);
+             ObjectOutputStream oos = new ObjectOutputStream(bos)){
             oos.writeInt(nextId);
             oos.writeObject(repo);
         }catch (IOException e){
