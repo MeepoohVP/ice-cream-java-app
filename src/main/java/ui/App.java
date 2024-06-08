@@ -77,7 +77,7 @@ public class App {
                     String queue = sc.nextLine();
                     System.out.println(sh.findCustomer(queue));
                 } else if (select.equals("list all")) {
-                    sh.allCustomers().forEach(s->System.out.println("      " +s.getQueue()));
+                    sh.allCustomers().stream().sorted((a,b) -> a.getQueue().compareTo(b.getQueue())).forEach(s -> System.out.println("     " +s.getQueue()));
                 } else {
                     System.out.println("Invalid option");
                 }
@@ -120,35 +120,37 @@ public class App {
         for (int i = 0; i < password.length; i++) {
             pw+=password[i];
         }
-        Scanner way = new Scanner(System.in);
-        System.out.println("Welcome to Ice-cream shop!");
-        System.out.println("- memory" +
-                "\n- file" + "\n- database");
-        System.out.print("choose way to save data: ");
-        String choose = way.nextLine();
-        if (choose.equals("memory")) {
-            sh = new ShopService(
-                    new MemCustomerRepository(),
-                    new MemOrderRepository(),
-                    new MemOrderDetailRepository()
-            );
-        }else if (choose.equals("file")) {
-            sh = new ShopService(
-                    new FileCustomerRepository(),
-                    new FileOrderRepository(),
-                    new FileOrderDetailRepository()
-            );
-        }
-        while (pw.equals("icecream123")) {
-            Scanner input = new Scanner(System.in);
-            //receive order, manage
-            System.out.print("Choose option: ");
-            String option = input.nextLine();
-            if(option.equals("receive order")){
-                App.receiveOrder();
+        if (pw.equals("icecream123")){
+            Scanner way = new Scanner(System.in);
+            System.out.println("Welcome to Ice-cream shop!");
+            System.out.println("- memory" +
+                    "\n- file" + "\n- database");
+            System.out.print("choose way to save data: ");
+            String choose = way.nextLine();
+            if (choose.equals("memory")) {
+                sh = new ShopService(
+                        new MemCustomerRepository(),
+                        new MemOrderRepository(),
+                        new MemOrderDetailRepository()
+                );
+            }else if (choose.equals("file")) {
+                sh = new ShopService(
+                        new FileCustomerRepository(),
+                        new FileOrderRepository(),
+                        new FileOrderDetailRepository()
+                );
             }
-            if(option.equals("manage")){
-                App.manage();
+            while (true) {
+                Scanner input = new Scanner(System.in);
+                //receive order, manage
+                System.out.print("Choose option: ");
+                String option = input.nextLine();
+                if(option.equals("receive order")){
+                    App.receiveOrder();
+                }
+                if(option.equals("manage")){
+                    App.manage();
+                }
             }
         }
     }

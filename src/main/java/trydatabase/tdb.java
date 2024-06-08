@@ -1,9 +1,5 @@
 package trydatabase;
-
-import com.mysql.cj.jdbc.Driver;
-
 import java.sql.*;
-
 public class tdb {
     public static void main(String[] args){
         String url = "jdbc:mysql://127.0.0.1:3306/icecream";
