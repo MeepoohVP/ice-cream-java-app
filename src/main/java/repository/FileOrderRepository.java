@@ -18,12 +18,14 @@ public class FileOrderRepository implements OrderRepository {
                         try (FileInputStream fis = new FileInputStream(file);
                              BufferedInputStream bis = new BufferedInputStream(fis);
                              ObjectInputStream ois = new ObjectInputStream(bis)){
+                                nextCode = ois.readInt();
                                 repo = (Map<String, Order>) ois.readObject();
                         } catch (IOException | ClassNotFoundException e) {
                                 System.err.println(e.getMessage());
                         }
                 }
                 else {
+                        nextCode = 0;
                         repo = new HashMap<>();
                 }
         }
@@ -31,6 +33,7 @@ public class FileOrderRepository implements OrderRepository {
                 try (FileOutputStream fos = new FileOutputStream(PATH);
                      BufferedOutputStream bos = new BufferedOutputStream(fos);
                      ObjectOutputStream oos = new ObjectOutputStream(bos)){
+                        oos.writeInt(nextCode);
                         oos.writeObject(repo);
                 }catch (IOException e){
                         System.err.println(e.getMessage());
@@ -41,7 +44,10 @@ public class FileOrderRepository implements OrderRepository {
         public Order addOrder(String ownerId) {
                 String OrderCode = "" + ++nextCode;
                 Order c = new Order(OrderCode,ownerId,"wait payment");
-                if (repo.putIfAbsent(OrderCode, c) == null) return c;
+                if (repo.putIfAbsent(OrderCode, c) == null) {
+                        writeToFile();
+                        return c;
+                }
                 return null;
         }
         @Override

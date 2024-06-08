@@ -77,7 +77,7 @@ public class App {
                     String queue = sc.nextLine();
                     System.out.println(sh.findCustomer(queue));
                 } else if (select.equals("list all")) {
-                    System.out.println(sh.allCustomers());
+                    sh.allCustomers().forEach(s->System.out.println("      " +s.getQueue()));
                 } else {
                     System.out.println("Invalid option");
                 }
@@ -93,7 +93,7 @@ public class App {
                     String code = sc.nextLine();
                     System.out.println(sh.updateOrder(sh.findOrder(code)));
                 } else if (select.equals("list all")) {
-                    System.out.println(sh.allOrders());
+                    sh.allOrders().forEach(s-> System.out.println("      " +s));
                 } else {
                     System.out.println("Invalid option");
                 }
@@ -105,7 +105,7 @@ public class App {
                     String code = sc.nextLine();
                     System.out.println(sh.findOrderDetail(code));
                 } else if (select.equals("list all")) {
-                    System.out.println(sh.allOrderDetails());
+                    sh.allOrderDetails().forEach(s -> System.out.println("      " +s));
                 }
             }else {
                 System.out.println("Invalid option");

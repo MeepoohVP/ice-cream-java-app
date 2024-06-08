@@ -18,17 +18,22 @@ public class FileCustomerRepository implements CustomerRepository {
                     FileInputStream fis = new FileInputStream(file);
                     BufferedInputStream bis = new BufferedInputStream(fis);
                     ObjectInputStream ois = new ObjectInputStream(bis)){
+                nextId = ois.readInt();
                 repo = (Map<String, Customer>) ois.readObject();
             }catch (IOException | ClassNotFoundException e){
                 System.err.println(e.getMessage());
             }
         }
-        repo = new HashMap<>();
+        else {
+            nextId = 0;
+            repo = new HashMap<>();
+        }
     }
     private void writeToFile(){
         try (FileOutputStream fos = new FileOutputStream(PATH);
         BufferedOutputStream bos = new BufferedOutputStream(fos);
         ObjectOutputStream oos = new ObjectOutputStream(bos)){
+            oos.writeInt(nextId);
             oos.writeObject(repo);
         }catch (IOException e){
             System.err.println(e.getMessage());
