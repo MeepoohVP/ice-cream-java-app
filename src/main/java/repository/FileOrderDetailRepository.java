@@ -62,4 +62,11 @@ public class FileOrderDetailRepository implements OrderDetailRepository {
         }
         return orderDetail;
     }
+
+    @Override
+    public void removeOrderDetail(String orderCode) {
+        if (repo.remove(orderCode) != null) {
+            writeToFile();
+        }
+    }
 }

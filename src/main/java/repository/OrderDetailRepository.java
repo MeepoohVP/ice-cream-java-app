@@ -9,4 +9,5 @@ public interface OrderDetailRepository {
     OrderDetail findOrderDetail(String orderCode);
     OrderDetail updateOrderDetail(OrderDetail orderDetail);
     Collection<OrderDetail> allOrderDetails();
+    void removeOrderDetail(String orderCode);
 }

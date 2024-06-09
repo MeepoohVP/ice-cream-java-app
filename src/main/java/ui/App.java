@@ -1,6 +1,7 @@
 package ui;
 import domain.Customer;
 import domain.Order;
+import domain.OrderDetail;
 import repository.*;
 import service.ShopService;
 import java.io.Console;
@@ -11,12 +12,6 @@ import java.util.Scanner;
 import java.util.stream.Stream;
 
 public class App {
-    private static String url = "jdbc:mysql://127.0.0.1:3306/icecream";
-    private static String user = "root";
-    private static String password = "4149055160Pp!#";
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url,user,password);
-    }
     private static ShopService sh;
     private static void receiveOrder() {
         while (true){
@@ -33,9 +28,10 @@ public class App {
             Customer cust = sh.registerCustomer();
             System.out.print("How many cups do you need?: ");
             Order order = sh.addOrder(cust.getQueue());
-            sh.createOrderDetail(order.getCode());
+            OrderDetail orderDetail = sh.createOrderDetail(order.getCode());
             int quantity = sc.nextInt();
             sh.addIceCream(order.getCode(), menuName, quantity);
+            orderDetail.addIceCream(menuName, quantity);
             while (true){
                 Scanner sc2 = new Scanner(System.in);
                 System.out.print("Anything more(n if not): ");
@@ -46,14 +42,15 @@ public class App {
                 System.out.print("How many cups do you need?: ");
                 int q = sc2.nextInt();
                 sh.addIceCream(order.getCode(), more, q);
+                orderDetail.addIceCream(more, q);
             }
             System.out.println("This is your bill");
             System.out.println("queue: "+ cust.getQueue());
             System.out.println("order code: " + order.getCode());
-            sh.findOrderDetail(order.getCode()).getIceCream()
-                    .entrySet().stream()
+            orderDetail.getIceCream()
+                            .entrySet().stream()
                     .forEach(s -> System.out.println(s.getKey() + " " + s.getValue()));
-            System.out.println(sh.findOrderDetail(order.getCode()).getTotal() + ".-");
+            System.out.println(orderDetail.getTotal() + ".-");
             System.out.print("Confirm for payment (y/n): ");
             String confirm = sc.next();
             if (confirm.equals("y")){
@@ -66,7 +63,7 @@ public class App {
             System.out.println(order.getStatus());
         }
     }
-    public static void manage(){
+    public static void access(){
         while (true){
             System.out.println("In this option you can manage" +
                     "\n- customer" +
@@ -79,36 +76,39 @@ public class App {
                 break;
             }
             if (m.equals("customer")) {
-                System.out.print("you want to find or list all customer: ");
+                System.out.print("you want to find, remove or list all customer: ");
                 String select = sc.nextLine();
                 if (select.equals("find")){
                     System.out.print("Enter customer queue: ");
                     String queue = sc.nextLine();
                     System.out.println(sh.findCustomer(queue));
                 } else if (select.equals("list all")) {
-                    System.out.println(sh.allCustomers());
                     sh.allCustomers().stream().sorted((a,b) -> a.getQueue().compareTo(b.getQueue())).forEach(s -> System.out.println("     " +s.getQueue()));
+                } else if (select.equals("remove")) {
+                    System.out.print("Enter customer queue: ");
+                    String queue = sc.nextLine();
+                    sh.removeCustomer(queue);
                 } else {
                     System.out.println("Invalid option");
                 }
             } else if (m.equals("order")) {
-                System.out.print("you want to find, update or list all order: ");
+                System.out.print("you want to find, remove or list all order: ");
                 String select = sc.nextLine();
                 if (select.equals("find")){
                     System.out.print("Enter order code: ");
                     String code = sc.nextLine();
                     System.out.println(sh.findOrder(code));
-                } else if (select.equals("update")) {
-                    System.out.print("Enter order code: ");
-                    String code = sc.nextLine();
-                    System.out.println(sh.updateOrder(sh.findOrder(code)));
                 } else if (select.equals("list all")) {
                     sh.allOrders().forEach(s-> System.out.println("      " +s));
+                } else if (select.equals("remove")) {
+                    System.out.print("Enter order code: ");
+                    String code = sc.nextLine();
+                    sh.removeOrder(code);
                 } else {
                     System.out.println("Invalid option");
                 }
             } else if (m.equals("order detail")) {
-                System.out.print("you want to find or list all order detail: ");
+                System.out.print("you want to find, remove or list all order detail: ");
                 String select = sc.nextLine();
                 if (select.equals("find")){
                     System.out.print("Enter order code: ");
@@ -116,6 +116,12 @@ public class App {
                     System.out.println(sh.findOrderDetail(code));
                 } else if (select.equals("list all")) {
                     sh.allOrderDetails().forEach(s -> System.out.println("      " +s));
+                } else if (select.equals("remove")) {
+                    System.out.print("Enter order code: ");
+                    String code = sc.nextLine();
+                    sh.removeOrderDetail(code);
+                } else {
+                    System.out.println("Invalid option");
                 }
             }else {
                 System.out.println("Invalid option");
@@ -123,50 +129,54 @@ public class App {
         }
     }
     public static void start(){
-        Console cs = System.console();
-        String user =  cs.readLine("Enter your username: ");
-        char[] password = cs.readPassword("Enter your password: ");
-        String pw = "";
-        for (int i = 0; i < password.length; i++) {
-            pw+=password[i];
+        Scanner way = new Scanner(System.in);
+        System.out.println("Welcome to Ice-cream shop!");
+        System.out.println("- memory" +
+                "\n- file" + "\n- database");
+        System.out.print("choose way to save data: ");
+        String choose = way.nextLine();
+        if (choose.equals("memory")) {
+            sh = new ShopService(
+                    new MemCustomerRepository(),
+                    new MemOrderRepository(),
+                    new MemOrderDetailRepository()
+            );
+        }else if (choose.equals("file")) {
+            sh = new ShopService(
+                    new FileCustomerRepository(),
+                    new FileOrderRepository(),
+                    new FileOrderDetailRepository()
+            );
+        } else if (choose.equals("database")) {
+            Scanner db = new Scanner(System.in);
+            System.out.print("URL: ");
+            String url = db.nextLine();
+            System.out.print("username: ");
+            String username = db.next();
+            char[] DbArr = System.console().readPassword("password: ");
+            String password = new String(DbArr);
+            sh = new ShopService(
+                    new DbCustomerRepository(url, username, password),
+                    new DbOrderRepository(url, username, password),
+                    new DbOrderDetailRepository(url, username, password)
+            );
         }
-        if (pw.equals("icecream123")){
-            Scanner way = new Scanner(System.in);
-            System.out.println("Welcome to Ice-cream shop!");
-            System.out.println("- memory" +
-                    "\n- file" + "\n- database");
-            System.out.print("choose way to save data: ");
-            String choose = way.nextLine();
-            if (choose.equals("memory")) {
-                sh = new ShopService(
-                        new MemCustomerRepository(),
-                        new MemOrderRepository(),
-                        new MemOrderDetailRepository()
-                );
-            }else if (choose.equals("file")) {
-                sh = new ShopService(
-                        new FileCustomerRepository(),
-                        new FileOrderRepository(),
-                        new FileOrderDetailRepository()
-                );
-            } else if (choose.equals("database")) {
-                sh = new ShopService(
-                        new DbCustomerRepository(),
-                        new DbOrderRepository(),
-                        new DbOrderDetailRepository()
-                );
+        while (true) {
+            Scanner input = new Scanner(System.in);
+            System.out.println("What do you want to do?");
+            System.out.println("- to receive order -> receive");
+            System.out.println("- to access information -> access");
+            System.out.print("Choose option[exit or q to quit the program]: ");
+            String option = input.nextLine();
+            if (option.matches("q|exit")) {
+                System.out.println("\nEnd.");
+                break;
             }
-            while (true) {
-                Scanner input = new Scanner(System.in);
-                //receive order, manage
-                System.out.print("Choose option: ");
-                String option = input.nextLine();
-                if(option.equals("receive order")){
-                    App.receiveOrder();
-                }
-                if(option.equals("manage")){
-                    App.manage();
-                }
+            else if(option.equals("receive")){
+                App.receiveOrder();
+            }
+            else if(option.equals("access")){
+                App.access();
             }
         }
     }

@@ -26,4 +26,8 @@ public class MemCustomerRepository implements CustomerRepository {
     public Collection<Customer> allCustomers() {
         return  repo.values();
     }
+    @Override
+    public void removeCustomer(String queue) {
+        repo.remove(queue);
+    }
 }

@@ -69,4 +69,10 @@ public class FileOrderRepository implements OrderRepository {
                 return repo.values();
         }
 
+        @Override
+        public void removeOrder(String orderCode) {
+                if (repo.remove(orderCode) != null) {
+                        writeToFile();
+                }
+        }
 }

@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public interface CustomerRepository {
     Customer addCustomer();
-    Customer findCustomer(String id);
+    Customer findCustomer(String queue);
     Collection<Customer> allCustomers();
-
+    void removeCustomer(String queue);
 }

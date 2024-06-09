@@ -31,6 +31,15 @@ public class OrderDetail implements Serializable {
     public Map<String, Integer> getIceCream() {
         return iceCream;
     }
+
+    public void setIceCream(Map<String, Integer> iceCream) {
+        this.iceCream = iceCream;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
     public void updateTotal(String menu, int quantity) {
         if (menu.equalsIgnoreCase("banana split")) {
             total += 99 * quantity;

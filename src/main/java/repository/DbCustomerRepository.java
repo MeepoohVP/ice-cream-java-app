@@ -1,22 +1,30 @@
 package repository;
 
 import domain.Customer;
-import ui.App;
 
 import java.sql.*;
 import java.util.*;
 
 public class DbCustomerRepository implements CustomerRepository {
-    private static String url = "jdbc:mysql://127.0.0.1:3306/icecream";
-    private static String user = "root";
-    private static String password = "4149055160Pp!#";
+    private String url;
+    private String user;
+    private String password;
     private static int nextId = 0;
-//    private static Map<String, Customer> repo = new HashMap<>();
-    public Connection getConnection() throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(url, user, password);
+    public Connection getConnection() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(url, user, password);
+        }catch (SQLException e){
+            System.err.println("Incorrect information.");
+        }catch (ClassNotFoundException e){
+            System.err.println("Couldn't find JDBC driver");
+        }
+        return null;
     }
-    public DbCustomerRepository() {
+    public DbCustomerRepository(String url, String user, String password) {
+        this.url = url;
+        this.user = user;
+        this.password = password;
         String sql = "CREATE TABLE IF NOT EXISTS DBcustomer (" +
                 "id INT PRIMARY KEY AUTO_INCREMENT, " +
                 "CustomerId VARCHAR(20) NOT NULL)";
@@ -30,8 +38,6 @@ public class DbCustomerRepository implements CustomerRepository {
             }
         }catch (SQLException e) {
             throw new RuntimeException("cannot create table",e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
     @Override
@@ -47,8 +53,6 @@ public class DbCustomerRepository implements CustomerRepository {
             return c;
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
         return null;
     }
@@ -59,16 +63,13 @@ public class DbCustomerRepository implements CustomerRepository {
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(selectSql)) {
-
             pstmt.setString(1, CustomerId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new Customer(rs.getString("CustomerId"));
+                return new Customer(rs.getString(2));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
         return null;
     }
@@ -82,13 +83,26 @@ public class DbCustomerRepository implements CustomerRepository {
              ResultSet rs = stmt.executeQuery(selectAllSql)) {
 
             while (rs.next()) {
-                customers.add(new Customer(rs.getString("CustomerId")));
+                customers.add(new Customer(rs.getString("customerid")));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            System.err.println("couldn't get all customers" + e.getMessage());
         }
         return customers;
+    }
+
+    @Override
+    public void removeCustomer(String q) {
+        try (Connection connect = getConnection()){
+            String sql = "DELETE FROM `DBcustomer` WHERE `customerid`='" + q + "';";
+            Statement statement0 = connect.createStatement();
+            Statement statement1 = connect.createStatement();
+            PreparedStatement pstatement = connect.prepareStatement(sql);
+            statement0.execute("SET sql_safe_updates = 0;");
+            pstatement.executeUpdate(sql);
+            statement1.execute(" SET sql_safe_updates = 1;");
+        }catch (SQLException e){
+            System.err.println("couldn't remove customer from database" + e.getMessage());
+        }
     }
 }

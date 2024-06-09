@@ -9,4 +9,5 @@ public interface OrderRepository {
     Order findOrder(String orderCode);
     Order updateOrder(Order order);
     Collection<Order> allOrder();
+    void removeOrder(String orderCode);
 }

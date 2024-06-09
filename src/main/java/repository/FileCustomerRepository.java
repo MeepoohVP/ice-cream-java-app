@@ -58,4 +58,11 @@ public class FileCustomerRepository implements CustomerRepository {
     public Collection<Customer> allCustomers() {
         return  repo.values();
     }
+
+    @Override
+    public void removeCustomer(String queue) {
+        if (repo.remove(queue) != null) {
+            writeToFile();
+        }
+    }
 }

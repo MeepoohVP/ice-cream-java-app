@@ -33,4 +33,9 @@ public class MemOrderDetailRepository implements OrderDetailRepository {
         }
         return orderDetail;
     }
+
+    @Override
+    public void removeOrderDetail(String orderCode) {
+        repo.remove(orderCode);
+    }
 }
