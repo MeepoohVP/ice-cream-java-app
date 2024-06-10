@@ -18,7 +18,7 @@ public class FileOrderDetailRepository implements OrderDetailRepository {
                  ObjectInputStream ois = new ObjectInputStream(bis)){
                 repo = (Map<String, OrderDetail>) ois.readObject();
             }catch (IOException | ClassNotFoundException e){
-                System.err.println(e.getMessage());
+                System.err.println("Error reading order details file" + e.getMessage());
             }
         }
         else {
@@ -31,7 +31,7 @@ public class FileOrderDetailRepository implements OrderDetailRepository {
              ObjectOutputStream oos = new ObjectOutputStream(bos)){
             oos.writeObject(repo);
         }catch (IOException e){
-            System.err.println(e.getMessage());
+            System.err.println("Error writing order details file" + e.getMessage());
         }
     }
     @Override
@@ -68,5 +68,11 @@ public class FileOrderDetailRepository implements OrderDetailRepository {
         if (repo.remove(orderCode) != null) {
             writeToFile();
         }
+    }
+
+    @Override
+    public void clearOrderDetails() {
+        repo.clear();
+        writeToFile();
     }
 }

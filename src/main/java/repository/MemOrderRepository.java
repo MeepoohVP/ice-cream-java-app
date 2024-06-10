@@ -39,4 +39,9 @@ public class MemOrderRepository implements OrderRepository {
     public void removeOrder(String orderCode) {
         repo.remove(orderCode);
     }
+
+    @Override
+    public void clearOrder() {
+        repo.clear();
+    }
 }

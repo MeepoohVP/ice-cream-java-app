@@ -40,7 +40,7 @@ public class DbOrderRepository implements OrderRepository {
                 nextCode = rs.getInt(1);
             }
         }catch (SQLException e) {
-            throw new RuntimeException("cannot create table",e);
+            System.err.println("Cannot create table " + e.getMessage());
         }
     }
     @Override
@@ -56,7 +56,7 @@ public class DbOrderRepository implements OrderRepository {
             pstmt.executeUpdate();
             return o;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("couldn't insert order" + e.getMessage());
         }
         return null;
     }
@@ -75,7 +75,7 @@ public class DbOrderRepository implements OrderRepository {
                                 rs.getString(3));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("couldn't find order"+e.getMessage());
         }
         return null;
     }
@@ -91,7 +91,7 @@ public class DbOrderRepository implements OrderRepository {
             pstmt.executeUpdate();
             return order;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("couldn't update order"+e.getMessage());
         }
         return null;
     }
@@ -111,7 +111,7 @@ public class DbOrderRepository implements OrderRepository {
                                     rs.getString(3)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("couldn't get all orders"+e.getMessage());
         }
         return orders;
     }
@@ -120,6 +120,21 @@ public class DbOrderRepository implements OrderRepository {
     public void removeOrder(String odCode) {
         try (Connection connect = getConnection()){
             String sql = "DELETE FROM `DBorder` WHERE `code`=" + Integer.parseInt(odCode) + ";";
+            Statement statement0 = connect.createStatement();
+            Statement statement1 = connect.createStatement();
+            PreparedStatement pstatement = connect.prepareStatement(sql);
+            statement0.execute("SET sql_safe_updates = 0;");
+            pstatement.executeUpdate(sql);
+            statement1.execute(" SET sql_safe_updates = 1;");
+        }catch (SQLException e){
+            System.err.println("couldn't remove order from database" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void clearOrder() {
+        try (Connection connect = getConnection()){
+            String sql = "DELETE FROM `DBorder`;";
             Statement statement0 = connect.createStatement();
             Statement statement1 = connect.createStatement();
             PreparedStatement pstatement = connect.prepareStatement(sql);

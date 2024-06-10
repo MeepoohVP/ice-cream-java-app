@@ -52,7 +52,7 @@ public class DbCustomerRepository implements CustomerRepository {
             pstmt.executeUpdate();
             return c;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Couldn't insert new customer" + e.getMessage());
         }
         return null;
     }
@@ -69,7 +69,7 @@ public class DbCustomerRepository implements CustomerRepository {
                 return new Customer(rs.getString(2));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("couldn't find customer " + CustomerId);
         }
         return null;
     }
@@ -95,6 +95,21 @@ public class DbCustomerRepository implements CustomerRepository {
     public void removeCustomer(String q) {
         try (Connection connect = getConnection()){
             String sql = "DELETE FROM `DBcustomer` WHERE `customerid`='" + q + "';";
+            Statement statement0 = connect.createStatement();
+            Statement statement1 = connect.createStatement();
+            PreparedStatement pstatement = connect.prepareStatement(sql);
+            statement0.execute("SET sql_safe_updates = 0;");
+            pstatement.executeUpdate(sql);
+            statement1.execute(" SET sql_safe_updates = 1;");
+        }catch (SQLException e){
+            System.err.println("couldn't remove customer from database" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void clearCustomers() {
+        try (Connection connect = getConnection()){
+            String sql = "DELETE FROM `DBcustomer`;";
             Statement statement0 = connect.createStatement();
             Statement statement1 = connect.createStatement();
             PreparedStatement pstatement = connect.prepareStatement(sql);

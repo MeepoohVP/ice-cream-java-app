@@ -30,4 +30,9 @@ public class MemCustomerRepository implements CustomerRepository {
     public void removeCustomer(String queue) {
         repo.remove(queue);
     }
+
+    @Override
+    public void clearCustomers() {
+        repo.clear();
+    }
 }

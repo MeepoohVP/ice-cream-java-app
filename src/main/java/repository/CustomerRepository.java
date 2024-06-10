@@ -9,4 +9,5 @@ public interface CustomerRepository {
     Customer findCustomer(String queue);
     Collection<Customer> allCustomers();
     void removeCustomer(String queue);
+    void clearCustomers();
 }

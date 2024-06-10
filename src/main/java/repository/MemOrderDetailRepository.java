@@ -38,4 +38,9 @@ public class MemOrderDetailRepository implements OrderDetailRepository {
     public void removeOrderDetail(String orderCode) {
         repo.remove(orderCode);
     }
+
+    @Override
+    public void clearOrderDetails() {
+        repo.clear();
+    }
 }

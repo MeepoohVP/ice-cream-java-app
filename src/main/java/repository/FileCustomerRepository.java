@@ -21,7 +21,7 @@ public class FileCustomerRepository implements CustomerRepository {
                 nextId = ois.readInt();
                 repo = (Map<String, Customer>) ois.readObject();
             }catch (IOException | ClassNotFoundException e){
-                System.err.println(e.getMessage());
+                System.err.println("Error reading file: " + e.getMessage());
             }
         }
         else {
@@ -36,7 +36,7 @@ public class FileCustomerRepository implements CustomerRepository {
             oos.writeInt(nextId);
             oos.writeObject(repo);
         }catch (IOException e){
-            System.err.println(e.getMessage());
+            System.err.println("Error writing to file" + e.getMessage());
         }
     }
     @Override
@@ -64,5 +64,11 @@ public class FileCustomerRepository implements CustomerRepository {
         if (repo.remove(queue) != null) {
             writeToFile();
         }
+    }
+
+    @Override
+    public void clearCustomers() {
+        repo.clear();
+        writeToFile();
     }
 }

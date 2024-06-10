@@ -8,9 +8,9 @@ public class Order implements Serializable {
     private final String code;
     private final String ownerId;
     private String status;
+    //wait payment
     //in progress
     //success
-    //wait payment
     //cancel
     public Order(String code, String ownerId, String status) {
         this.code = code;

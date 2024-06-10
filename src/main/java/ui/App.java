@@ -76,7 +76,7 @@ public class App {
                 break;
             }
             if (m.equals("customer")) {
-                System.out.print("you want to find, remove or list all customer: ");
+                System.out.print("you want to find, remove. clear or list all customer: ");
                 String select = sc.nextLine();
                 if (select.equals("find")){
                     System.out.print("Enter customer queue: ");
@@ -88,11 +88,13 @@ public class App {
                     System.out.print("Enter customer queue: ");
                     String queue = sc.nextLine();
                     sh.removeCustomer(queue);
+                } else if (select.equals("clear")) {
+                    sh.removeAllCustomer();
                 } else {
                     System.out.println("Invalid option");
                 }
             } else if (m.equals("order")) {
-                System.out.print("you want to find, remove or list all order: ");
+                System.out.print("you want to find, remove, clear or list all order: ");
                 String select = sc.nextLine();
                 if (select.equals("find")){
                     System.out.print("Enter order code: ");
@@ -104,11 +106,13 @@ public class App {
                     System.out.print("Enter order code: ");
                     String code = sc.nextLine();
                     sh.removeOrder(code);
+                } else if (select.equals("clear")) {
+                    sh.removeAllOrder();
                 } else {
                     System.out.println("Invalid option");
                 }
             } else if (m.equals("order detail")) {
-                System.out.print("you want to find, remove or list all order detail: ");
+                System.out.print("you want to find, remove, clear or list all order detail: ");
                 String select = sc.nextLine();
                 if (select.equals("find")){
                     System.out.print("Enter order code: ");
@@ -120,6 +124,8 @@ public class App {
                     System.out.print("Enter order code: ");
                     String code = sc.nextLine();
                     sh.removeOrderDetail(code);
+                } else if (select.equals("clear")) {
+                    sh.removeAllOrderDetail();
                 } else {
                     System.out.println("Invalid option");
                 }

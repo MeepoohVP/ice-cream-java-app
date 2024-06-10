@@ -33,7 +33,7 @@ public class DbOrderDetailRepository implements OrderDetailRepository {
              PreparedStatement statement = connection.prepareStatement(sql)){
             statement.executeUpdate();
         }catch (SQLException e) {
-            throw new RuntimeException("cannot create table",e);
+            System.err.println("Error while creating table" + e.getMessage());
         }
     }
     @Override
@@ -49,7 +49,7 @@ public class DbOrderDetailRepository implements OrderDetailRepository {
             pstmt.executeUpdate();
             return orderDetail;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Couldn't insert order detail" + e.getMessage());
         }
         return null;
     }
@@ -83,7 +83,7 @@ public class DbOrderDetailRepository implements OrderDetailRepository {
                 orderDetails.add(orderDetail);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("cannot find order details" + e.getMessage());
         }
         return orderDetails;
     }
@@ -108,6 +108,21 @@ public class DbOrderDetailRepository implements OrderDetailRepository {
     public void removeOrderDetail(String odCode) {
         try (Connection connect = getConnection()){
             String sql = "DELETE FROM `DBorderdetail` WHERE `ordercode`='" + odCode + "';";
+            Statement statement0 = connect.createStatement();
+            Statement statement1 = connect.createStatement();
+            PreparedStatement pstatement = connect.prepareStatement(sql);
+            statement0.execute("SET sql_safe_updates = 0;");
+            pstatement.executeUpdate(sql);
+            statement1.execute(" SET sql_safe_updates = 1;");
+        }catch (SQLException e){
+            System.err.println("couldn't remove order detail from database" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void clearOrderDetails() {
+        try (Connection connect = getConnection()){
+            String sql = "DELETE FROM `DBorderdetail`;";
             Statement statement0 = connect.createStatement();
             Statement statement1 = connect.createStatement();
             PreparedStatement pstatement = connect.prepareStatement(sql);

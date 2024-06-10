@@ -10,4 +10,5 @@ public interface OrderRepository {
     Order updateOrder(Order order);
     Collection<Order> allOrder();
     void removeOrder(String orderCode);
+    void clearOrder();
 }

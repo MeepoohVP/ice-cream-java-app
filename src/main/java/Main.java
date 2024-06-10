@@ -9,7 +9,7 @@ public class Main {
         String user =  console.readLine("Enter your username: ");
         char[] passwordarr = console.readPassword("Enter your password: ");
         String password = new String(passwordarr);
-        if (password.equals("icecream123")) {
+        if (password.equals("icecream123") && user.equals("admin")) {
             App.start();
         }
     }
